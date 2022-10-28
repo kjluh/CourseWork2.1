@@ -18,10 +18,12 @@ public class ServicePlanner {
         }
         return x;
     }
+
     protected static void getTaskforDate(Scanner scanner) {
         LocalDate taskDate = LocalDate.parse(scanner.next());
         getDate(taskDate);
     }
+
     protected static void getDate(LocalDate localDate) {
         var x = DailyPlanner.planer.values();
         for (Task task : x) {
@@ -29,15 +31,16 @@ public class ServicePlanner {
                 System.out.println("На эту дату есть задачи: " + task);
             } else if (task.getRepeatability().equals(Repeatability.daily)) {
                 System.out.println("На эту дату есть задачи: " + task);
-            } else if (task.getRepeatability().equals(Repeatability.weekly) && task.getWeek().equals(localDate)) {
+            } else if (task.getRepeatability().equals(Repeatability.weekly) && task.getWeek(localDate)) {
                 System.out.println("На эту дату есть задачи: " + task);
-            } else if (task.getRepeatability().equals(Repeatability.monthly)&& task.getMonth().equals(localDate)) {
+            } else if (task.getRepeatability().equals(Repeatability.monthly) && task.getMonth(localDate)) {
                 System.out.println("На эту дату есть задачи: " + task);
-            }else if (task.getRepeatability().equals(Repeatability.annual)&& task.getYear().equals(localDate)) {
+            } else if (task.getRepeatability().equals(Repeatability.annual) && task.getYear(localDate)) {
                 System.out.println("На эту дату есть задачи: " + task);
             }
         }
     }
+
     protected static void remove(Scanner scanner) {
         System.out.println("Введите номер задачи которую нужно удалить ");
         int taskid = scanner.nextInt();

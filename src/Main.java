@@ -9,7 +9,10 @@ public class Main {
     private static final ServicePlanner servicePlanner = new ServicePlanner();
 
     public static void main(String[] args) throws PersonalTackException {
-
+LocalDate x = LocalDate.now();
+        System.out.println(x);
+        x= x.plusMonths(1);
+        System.out.println(x);
         try (Scanner scanner = new Scanner(System.in)) {
             label:
             while (true) {

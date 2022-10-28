@@ -87,25 +87,51 @@ public class Task {
         return Objects.hash(name, description, counter, personalTack, timeCreateTask, repeatability);
     }
 
-    public LocalDate getWeek() {
+    public boolean getWeek(LocalDate localDate) {
+        boolean q = false;
         LocalDate y = timeCreateTask;
-        while (LocalDate.now().isAfter(y)) {
-            y = y.plusWeeks(1);
+        int i = 0;
+        while (i < (100*12)) {
+            if (y.equals(localDate)) {
+                q = true;
+                break;
+            } else {
+                y = y.plusWeeks(1);
+                i = i + 1;
+            }
         }
-        return y;
+        return q;
     }
-    public LocalDate getMonth() {
-        LocalDate x = timeCreateTask; // дата создания -
-        while (LocalDate.now().isAfter(x)) {
-            x = x.plusMonths(1);
+
+    public boolean getMonth(LocalDate localDate) {
+        boolean q1 = false;
+        LocalDate x = timeCreateTask;
+        int i = 0;
+        while (i < (100*12)) {
+            if (x.equals(localDate)) {
+                q1 = true;
+                break;
+            } else {
+                x = x.plusMonths(1);
+                i = i + 1;
+            }
         }
-        return x;
+        return q1;
     }
-    public LocalDate getYear() {
+
+    public boolean getYear(LocalDate localDate) {
+        boolean q2 = false;
         LocalDate z = timeCreateTask;
-        while (LocalDate.now().isAfter(z)) {
-            z = z.plusYears(1);
+        int i = 0;
+        while (i < (100*12)) {
+            if (z.equals(localDate)) {
+                q2 = true;
+                break;
+            } else {
+                z = z.plusMonths(1);
+                i = i + 1;
+            }
         }
-        return z;
+        return q2;
     }
 }
