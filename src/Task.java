@@ -1,5 +1,4 @@
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class Task {
@@ -7,30 +6,44 @@ public class Task {
     private String description; //описане задачи
     private static int counter; //счетчик
 
-    private boolean personalTack; //если личная-то tru иначе лож
+    private TypeTask typeTask;
     private LocalDate timeCreateTask; //время и дата постановки задачи
     private Repeatability repeatability; //енам по повторяемости
-    private ArrayList<LocalDate> repeatabilityForDays;
+
+    private boolean remote = false;
 
     public void setTimeCreateTask(LocalDate timeCreateTask) {
         this.timeCreateTask = timeCreateTask;
     }
 
-    public Task(String name, String description, boolean personalTack, Repeatability repeatability) {
+    public Task(String name, String description, TypeTask personalTack, Repeatability repeatability) {
         counter = counter + 1;
         setName(name);
         setDescription(description);
-        setPersonalTack(personalTack);
+        setTypeTask(personalTack);
         setLocalDateTime();
         setRepeatability(repeatability);
+    }
+
+    public boolean getRemote() {
+        return remote;
+    }
+
+    public void setRemote(boolean remote) {
+        this.remote = remote;
     }
 
     public LocalDate getTimeCreateTask() {
         return timeCreateTask;
     }
 
-    public int getCounter() {
-        return counter;
+    public int getId() {
+        int id = counter;
+        return id;
+    }
+
+    public TypeTask getTypeTask() {
+        return typeTask;
     }
 
     public Repeatability getRepeatability() {
@@ -45,8 +58,8 @@ public class Task {
         this.description = Objects.requireNonNullElse(description, "o_o");
     }
 
-    public void setPersonalTack(boolean personalTack) {
-        this.personalTack = personalTack;
+    public void setTypeTask(TypeTask typeTask) {
+        this.typeTask = typeTask;
     }
 
     public void setLocalDateTime() {
@@ -57,20 +70,11 @@ public class Task {
         this.repeatability = repeatability;
     }
 
-    private String getInfoPersonalTack() {
-        String x;
-        if (personalTack) {
-            x = " личная задача ";
-        } else {
-            x = " рабочая задача ";
-        }
-        return x;
-    }
 
     @Override
     public String toString() {
         return "Название задачи " + name + ", описание " + description +
-                ", тип:" + getInfoPersonalTack() + ", время постановки " + timeCreateTask +
+                ", тип:" + typeTask + ", время постановки " + timeCreateTask +
                 ", повторямость " + repeatability.getInfo() + "\n";
     }
 
@@ -79,19 +83,19 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return personalTack == task.personalTack && Objects.equals(name, task.name) && Objects.equals(description, task.description) && Objects.equals(timeCreateTask, task.timeCreateTask) && repeatability == task.repeatability;
+        return typeTask == task.typeTask && Objects.equals(name, task.name) && Objects.equals(description, task.description) && Objects.equals(timeCreateTask, task.timeCreateTask) && repeatability == task.repeatability;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, counter, personalTack, timeCreateTask, repeatability);
+        return Objects.hash(name, description, counter, typeTask, timeCreateTask, repeatability);
     }
 
     public boolean getWeek(LocalDate localDate) {
         boolean q = false;
         LocalDate y = timeCreateTask;
         int i = 0;
-        while (i < (100*12)) {
+        while (i < (100 * 12 * 4)) {
             if (y.equals(localDate)) {
                 q = true;
                 break;
@@ -107,7 +111,7 @@ public class Task {
         boolean q1 = false;
         LocalDate x = timeCreateTask;
         int i = 0;
-        while (i < (100*12)) {
+        while (i < (100 * 12)) {
             if (x.equals(localDate)) {
                 q1 = true;
                 break;
@@ -123,15 +127,25 @@ public class Task {
         boolean q2 = false;
         LocalDate z = timeCreateTask;
         int i = 0;
-        while (i < (100*12)) {
+        while (i < 100) {
             if (z.equals(localDate)) {
                 q2 = true;
                 break;
             } else {
-                z = z.plusMonths(1);
+                z = z.plusYears(1);
                 i = i + 1;
             }
         }
         return q2;
+    }
+
+    public boolean getDay(LocalDate localDate) {
+        boolean q3 = false;
+        LocalDate z = timeCreateTask;
+        int i = 0;
+        if (localDate.isAfter(z)) {
+            q3 = true;
+        }
+        return q3;
     }
 }
