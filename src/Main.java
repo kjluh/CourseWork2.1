@@ -68,7 +68,13 @@ public class Main {
         System.out.println("Если хотите, введите желаемую дату задачи в формате год-месяц-день ");
         String dateCreate = scanner.next();
         Task example = new Task(taskName, taskDescription, personalTack, SERVICE_PLANNER.repeatability(repeatability));
-        PLANNER.addDailyPlanner(example.getId(), example);
+        try {
+
+
+            PLANNER.addDailyPlanner(example.getId(), example);
+        } catch (TaskExeption e) {
+            System.out.println("У нас проблемы ");
+        }
         example.setTimeCreateTask(LocalDate.parse(dateCreate));
 
     }

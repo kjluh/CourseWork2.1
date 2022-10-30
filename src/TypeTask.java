@@ -1,7 +1,7 @@
 public enum TypeTask {
     personal(" личная "),
     working(" рабочая ");
-    final  String info;
+    private final String info;
 
     TypeTask(String info) {
         this.info = info;
