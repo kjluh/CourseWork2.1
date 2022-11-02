@@ -1,28 +1,27 @@
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Task {
+public class Task implements FrequencyTask {
     private String name; //название задачи
-    private String description; //описане задачи
+    private String description; //описание задачи
     private static int counter; //счетчик
 
-    private TypeTask typeTask;
-    private LocalDate timeCreateTask; //время и дата постановки задачи
-    private Repeatability repeatability; //енам по повторяемости
+    private TypeTask typeTask;//персональность
+    private LocalDate timeDeadLine; //время и дата постановки задачи
 
-    private boolean remote = false;
 
-    public void setTimeCreateTask(LocalDate timeCreateTask) {
-        this.timeCreateTask = timeCreateTask;
+    private boolean remote = false; // удалена ли задача
+
+    public void setTimeDeadLine(LocalDate timeDeadLine) {
+        this.timeDeadLine = timeDeadLine;
     }
 
-    public Task(String name, String description, TypeTask personalTack, Repeatability repeatability) {
+    public Task(String name, String description, TypeTask personalTack) {
         counter = counter + 1;
         setName(name);
         setDescription(description);
         setTypeTask(personalTack);
         setLocalDateTime();
-        setRepeatability(repeatability);
     }
 
     public boolean getRemote() {
@@ -33,8 +32,8 @@ public class Task {
         this.remote = remote;
     }
 
-    public LocalDate getTimeCreateTask() {
-        return timeCreateTask;
+    public LocalDate getTimeDeadLine() {
+        return timeDeadLine;
     }
 
     public int getId() {
@@ -42,13 +41,6 @@ public class Task {
         return id;
     }
 
-    public TypeTask getTypeTask() {
-        return typeTask;
-    }
-
-    public Repeatability getRepeatability() {
-        return repeatability;
-    }
 
     public void setName(String name) {
         this.name = Objects.requireNonNullElse(name, "Задача " + counter);
@@ -63,19 +55,15 @@ public class Task {
     }
 
     public void setLocalDateTime() {
-        this.timeCreateTask = LocalDate.now();
-    }
-
-    public void setRepeatability(Repeatability repeatability) {
-        this.repeatability = repeatability;
+        this.timeDeadLine = LocalDate.now();
     }
 
 
     @Override
     public String toString() {
         return "Название задачи " + name + ", описание " + description +
-                ", тип:" + typeTask + ", время постановки " + timeCreateTask +
-                ", повторямость " + repeatability.getInfo() + "\n";
+                ", тип:" + typeTask + ", время постановки " + timeDeadLine
+                + ", помечена как удаленная: " + getRemote() + "\n";
     }
 
     @Override
@@ -83,11 +71,16 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return typeTask == task.typeTask && Objects.equals(name, task.name) && Objects.equals(description, task.description) && Objects.equals(timeCreateTask, task.timeCreateTask) && repeatability == task.repeatability;
+        return typeTask == task.typeTask && Objects.equals(name, task.name) && Objects.equals(description, task.description) && Objects.equals(timeDeadLine, task.timeDeadLine);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, counter, typeTask, timeCreateTask, repeatability);
+        return Objects.hash(name, description, counter, typeTask, timeDeadLine);
+    }
+
+    @Override
+    public LocalDate frequency(LocalDate localDate) {
+        return null;
     }
 }

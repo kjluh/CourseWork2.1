@@ -4,23 +4,7 @@ import java.util.Scanner;
 
 public class ServicePlanner {
 
-    protected static Repeatability repeatability(int repeatability) {
-        Repeatability x = null;
-        if (repeatability == 1) {
-            x = Repeatability.single;
-        } else if (repeatability == 2) {
-            x = Repeatability.daily;
-        } else if (repeatability == 3) {
-            x = Repeatability.weekly;
-        } else if (repeatability == 4) {
-            x = Repeatability.monthly;
-        } else if (repeatability == 5) {
-            x = Repeatability.annual;
-        }
-        return x;
-    }
-
-    protected static void getRemoteTask(Scanner scanner) {
+    protected static void getRemoteTask() {
         Collection<Task> baseRemoteTask = DailyPlanner.planer.values();
         System.out.println("Список удаленных задач: ");
         for (Task task : baseRemoteTask) {
@@ -30,56 +14,48 @@ public class ServicePlanner {
         }
     }
 
-    protected static void getTaskForDate(Scanner scanner) {
+    protected void getTaskForDate(Scanner scanner) {
         LocalDate taskDate = LocalDate.parse(scanner.next());
-        getDate(taskDate);
-    }
-
-    protected static void getDate(LocalDate localDate) {
-        Collection<Task> baseTaskForDate = DailyPlanner.planer.values();
-        for (Task task : baseTaskForDate) {
-            if (task.getRepeatability().equals(Repeatability.single) && task.getTimeCreateTask().equals(localDate) && !task.getRemote()) {
-                System.out.println("На эту дату есть задачи: " + task);
-            } else if (task.getRepeatability().equals(Repeatability.daily) && getDay(localDate, task) && !task.getRemote()) {
-                System.out.println("На эту дату есть задачи: " + task);
-            } else if (task.getRepeatability().equals(Repeatability.weekly) && getWeek(localDate, task) && !task.getRemote()) {
-                System.out.println("На эту дату есть задачи: " + task);
-            } else if (task.getRepeatability().equals(Repeatability.monthly) && getMonth(localDate, task) && !task.getRemote()) {
-                System.out.println("На эту дату есть задачи: " + task);
-            } else if (task.getRepeatability().equals(Repeatability.annual) && getYear(localDate, task) && !task.getRemote()) {
-                System.out.println("На эту дату есть задачи: " + task);
+        for (Task task : DailyPlanner.planer.values()) {
+            if (task.frequency(taskDate).equals(taskDate) && !task.getRemote()){
+                System.out.println(task);
             }
         }
     }
-    public static boolean getDay(LocalDate localDate, Task task) {
-        boolean q3 = false;
-        LocalDate z = task.getTimeCreateTask();
-        int i = 0;
-        if (localDate.isAfter(z)) {
-            q3 = true;
+
+    //    protected static void getDate(LocalDate localDate) {
+//        Collection<Task> baseTaskForDate = DailyPlanner.planer.values();
+//        for (Task task : baseTaskForDate) {
+//            if (task.getRepeatability().equals(Repeatability.single) && task.getTimeCreateTask().equals(localDate) && !task.getRemote()) {
+//                System.out.println("На эту дату есть задачи: " + task);
+//            } else if (task.getRepeatability().equals(Repeatability.daily) && getDay(localDate, task) && !task.getRemote()) {
+//                System.out.println("На эту дату есть задачи: " + task);
+//            } else if (task.getRepeatability().equals(Repeatability.weekly) && EveryWeekTask.frequency(localDate, task) && !task.getRemote()) {
+//                System.out.println("На эту дату есть задачи: " + task);
+//            } else if (task.getRepeatability().equals(Repeatability.monthly) && getMonth(localDate, task) && !task.getRemote()) {
+//                System.out.println("На эту дату есть задачи: " + task);
+//            } else if (task.getRepeatability().equals(Repeatability.annual) && getYear(localDate, task) && !task.getRemote()) {
+//                System.out.println("На эту дату есть задачи: " + task);
+//            }
+//        }
+//    }
+    protected void addDailyPlanner(Task task) throws TaskExeption {
+        if (DailyPlanner.planer.containsKey(task.getId())) {
+            throw new TaskExeption("проверьте ключ к задаче " + task.getId() + " задача с данным номером уже присутствует в ежедневнике");
+        } else {
+            DailyPlanner.planer.put(task.getId(), task);
         }
-        return q3;
     }
 
-    public static boolean getWeek(LocalDate localDate, Task task) {
-        boolean q = false;
-        LocalDate y = task.getTimeCreateTask();
-        int i = 0;
-        while (i < (100 * 12 * 4)) {
-            if (y.equals(localDate)) {
-                q = true;
-                break;
-            } else {
-                y = y.plusWeeks(1);
-                i = i + 1;
-            }
-        }
-        return q;
+    private static void removeTask(int count) {
+        Task x = DailyPlanner.planer.get(count);
+        x.setRemote(true);
+        DailyPlanner.planer.put(count, x);
     }
 
-    public static boolean getMonth(LocalDate localDate, Task task) {
+    private static boolean getMonth(LocalDate localDate, Task task) {
         boolean q1 = false;
-        LocalDate x = task.getTimeCreateTask();
+        LocalDate x = task.getTimeDeadLine();
         int i = 0;
         while (i < (100 * 12)) {
             if (x.equals(localDate)) {
@@ -93,9 +69,9 @@ public class ServicePlanner {
         return q1;
     }
 
-    public static boolean getYear(LocalDate localDate, Task task) {
+    private static boolean getYear(LocalDate localDate, Task task) {
         boolean q2 = false;
-        LocalDate z = task.getTimeCreateTask();
+        LocalDate z = task.getTimeDeadLine();
         int i = 0;
         while (i < 100) {
             if (z.equals(localDate)) {
@@ -112,7 +88,7 @@ public class ServicePlanner {
     protected static void remove(Scanner scanner) {
         System.out.println("Введите номер задачи которую нужно удалить (нумерация с 1) ");
         int taskId = scanner.nextInt();
-        Main.PLANNER.removeTask(taskId);
+        removeTask(taskId);
     }
 
     protected static void editTask(Scanner scanner) {
@@ -127,5 +103,45 @@ public class ServicePlanner {
         example.setDescription(description);
         DailyPlanner.planer.put(x, example);
 
+    }
+
+    protected void inputTask(Scanner scanner) {
+        System.out.print("Введите название задачи: ");
+        String taskName = scanner.next();
+        System.out.print("Введите описание задачи задачи: ");
+        String taskDescription = scanner.next();
+        TypeTask personalTack;
+        System.out.print("Если задача личная ведите - 1 \nесли по работе введите - 2\n");
+        int scannerPersonalTack = scanner.nextInt();
+        if (scannerPersonalTack <= 1) {
+            personalTack = TypeTask.personal;
+        } else {
+            personalTack = TypeTask.working;
+        }
+        System.out.println("Введите желаемую дату задачи в формате год-месяц-день ");
+        String dateCreate = scanner.next();
+
+        System.out.print("Если задача единоразовая введите - 1\nесли ежедневная введите - 2\n" +
+                "если еженедельная введите - 3 \nесли ежемесячная введите - 4 " +
+                "\nесли ежегодная введите - 5\n");
+        try {
+            int repeatability = scanner.nextInt();
+            Task example = null;
+            if (repeatability == 1) {
+                example = new SingleTask(taskName, taskDescription, personalTack);
+            } else if (repeatability == 2) {
+                example = new EveryDayTask(taskName, taskDescription, personalTack);
+            }else if (repeatability == 3) {
+                example = new EveryWeekTask(taskName, taskDescription, personalTack);
+            }else if (repeatability == 4) {
+                example = new EveryMonthTask(taskName, taskDescription, personalTack);
+            }else if (repeatability == 5) {
+                example = new EveryYaerTask(taskName, taskDescription, personalTack);
+            }
+            example.setTimeDeadLine(LocalDate.parse(dateCreate));
+            addDailyPlanner(example);
+        } catch (TaskExeption e) {
+            System.out.println("У нас проблемы ");
+        }
     }
 }
