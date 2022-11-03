@@ -7,21 +7,25 @@ public class Task implements FrequencyTask {
     private static int counter; //счетчик
 
     private TypeTask typeTask;//персональность
-    private LocalDate timeDeadLine; //время и дата постановки задачи
+    private LocalDate dateOfCompletion; //время и дата постановки задачи
 
 
     private boolean remote = false; // удалена ли задача
 
-    public void setTimeDeadLine(LocalDate timeDeadLine) {
-        this.timeDeadLine = timeDeadLine;
+    public void setDateOfCompletion(String dateOfCompletion) {
+        this.dateOfCompletion = LocalDate.parse(dateOfCompletion);
     }
 
-    public Task(String name, String description, TypeTask personalTack) {
-        counter = counter + 1;
-        setName(name);
-        setDescription(description);
-        setTypeTask(personalTack);
-        setLocalDateTime();
+    public Task(String name, String description, TypeTask personalTack, String dateCreate) {
+        try {
+            counter = counter + 1;
+            setName(name);
+            setDescription(description);
+            setTypeTask(personalTack);
+            setDateOfCompletion(dateCreate);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Не правильно введены данные");
+        }
     }
 
     public boolean getRemote() {
@@ -32,8 +36,8 @@ public class Task implements FrequencyTask {
         this.remote = remote;
     }
 
-    public LocalDate getTimeDeadLine() {
-        return timeDeadLine;
+    public LocalDate getDateOfCompletion() {
+        return dateOfCompletion;
     }
 
     public int getId() {
@@ -54,16 +58,12 @@ public class Task implements FrequencyTask {
         this.typeTask = typeTask;
     }
 
-    public void setLocalDateTime() {
-        this.timeDeadLine = LocalDate.now();
-    }
-
 
     @Override
     public String toString() {
         return "Название задачи " + name + ", описание " + description +
-                ", тип:" + typeTask + ", время постановки " + timeDeadLine
-                + ", помечена как удаленная: " + getRemote() + "\n";
+                ", тип:" + typeTask + ", время постановки " + dateOfCompletion
+                + ", помечена как удаленная: " + getRemote();
     }
 
     @Override
@@ -71,12 +71,12 @@ public class Task implements FrequencyTask {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return typeTask == task.typeTask && Objects.equals(name, task.name) && Objects.equals(description, task.description) && Objects.equals(timeDeadLine, task.timeDeadLine);
+        return typeTask == task.typeTask && Objects.equals(name, task.name) && Objects.equals(description, task.description) && Objects.equals(dateOfCompletion, task.dateOfCompletion);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, counter, typeTask, timeDeadLine);
+        return Objects.hash(name, description, counter, typeTask, dateOfCompletion);
     }
 
     @Override

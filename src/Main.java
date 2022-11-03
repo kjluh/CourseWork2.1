@@ -6,7 +6,6 @@ public class Main {
 
     public static void main(String[] args) {
         final  DailyPlanner PLANNER = new DailyPlanner();
-        final ServicePlanner servicePlanner = new ServicePlanner();
         Scanner scanner = new Scanner(System.in);
         label:
         while (true) {
@@ -16,21 +15,21 @@ public class Main {
                 int menu = scanner.nextInt();
                 switch (menu) {
                     case 1:
-                        servicePlanner.inputTask(scanner);
+                        PLANNER.inputTask(scanner);
                         break;
                     case 2:
                         System.out.println("Введите номер задачи для редакции: ");
-                        servicePlanner.editTask(scanner);
+                        PLANNER.editTask(scanner);
                         break;
                     case 3:
-                        servicePlanner.remove(scanner);
+                        PLANNER.remove(scanner);
                         break;
                     case 4:
                         System.out.println("Введите желаемую дату в формате : год-месяц-день ");
-                        servicePlanner.getTaskForDate(scanner);
+                        PLANNER.getTaskForDate(scanner);
                         break;
                     case 5:
-                        servicePlanner.getRemoteTask();
+                        PLANNER.getRemoteTask();
                         break;
                     case 0:
                         break label;
