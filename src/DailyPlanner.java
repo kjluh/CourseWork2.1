@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class DailyPlanner {
-    private final static Map<Integer, Task> planer = new HashMap<>();
+    private final static Map<Integer, Task> PLANNER = new HashMap<>();
 
     public DailyPlanner() {  }
     protected static void getRemoteTask() {
-        Collection<Task> baseRemoteTask = planer.values();
+        Collection<Task> baseRemoteTask = PLANNER.values();
         System.out.println("Список удаленных задач: ");
         for (Task task : baseRemoteTask) {
             if (task.getRemote()) {
@@ -21,7 +21,7 @@ public class DailyPlanner {
 
     protected void getTaskForDate(Scanner scanner) {
         LocalDate taskDate = LocalDate.parse(scanner.next());
-        for (Task task : planer.values()) {
+        for (Task task : PLANNER.values()) {
             if (task.frequency(taskDate).equals(taskDate) && !task.getRemote()){
                 System.out.println(task);
             }
@@ -45,17 +45,21 @@ public class DailyPlanner {
 //        }
 //    }
     protected void addDailyPlanner(Task task) throws TaskExeption {
-        if (planer.containsKey(task.getId())) {
+        if (PLANNER.containsKey(task.getId())) {
             throw new TaskExeption("проверьте ключ к задаче " + task.getId() + " задача с данным номером уже присутствует в ежедневнике");
         } else {
-            planer.put(task.getId(), task);
+            PLANNER.put(task.getId(), task);
         }
     }
 
     private static void removeTask(int count) {
-        Task x = DailyPlanner.planer.get(count);
-        x.setRemote(true);
-        DailyPlanner.planer.put(count, x);
+        try {
+            Task x = DailyPlanner.PLANNER.get(count);
+            x.setRemote(true);
+            DailyPlanner.PLANNER.put(count, x);
+        }catch (NullPointerException e){
+            System.out.println("задачи под таким номером нет");
+        }
     }
 
 
@@ -66,17 +70,23 @@ public class DailyPlanner {
     }
 
     protected static void editTask(Scanner scanner) {
-        int x = scanner.nextInt();
-        Task example = planer.get(x);
-        System.out.println("текущее значение: " + example);
-        System.out.println("Введите новое название задачи: ");
-        String name = scanner.next();
-        example.setName(name);
-        System.out.println("Введите новое описание задачи: ");
-        String description = scanner.next();
-        example.setDescription(description);
-        planer.put(x, example);
-
+        try {
+            int x = scanner.nextInt();
+            Task example = PLANNER.get(x);
+            if (!example.equals(null)) {
+                example.setName("Подскажи вот тут");
+            }
+            System.out.println("текущее значение: " + example);
+            System.out.println("Введите новое название задачи: ");
+            String name = scanner.next();
+            example.setName(name);
+            System.out.println("Введите новое описание задачи: ");
+            String description = scanner.next();
+            example.setDescription(description);
+            PLANNER.put(x, example);
+        } catch (NullPointerException e){
+            System.out.println("задачи под таким номером нет");
+        }
     }
 
     protected void inputTask(Scanner scanner) {
@@ -124,6 +134,6 @@ public class DailyPlanner {
 
     @Override
     public String toString() {
-        return "Список задач: \n" + planer.values();
+        return "Список задач: \n" + PLANNER.values();
     }
 }
